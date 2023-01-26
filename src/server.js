@@ -13,6 +13,21 @@ const handleListen = () => console.log("listen localhost:3000");
 
 const httpServer = http.createServer(app);
 const io = SocketIO(httpServer);
+//io.sockets.adapter 로 부터 sids 와 rooms를 가져와서
+const publicRooms = () => {
+  const {
+    sockets: {
+      adapter: { sids, rooms },
+    },
+  } = io;
+  const publicRooms = [];
+  rooms.forEach((_, key) => {
+    if (sids.get(key) === undefined) {
+      publicRooms.push(key);
+    }
+  });
+  return publicRooms;
+};
 
 io.on("connection", (socket) => {
   socket["nickName"] = "익명";
